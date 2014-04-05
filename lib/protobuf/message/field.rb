@@ -225,6 +225,8 @@ module Protobuf
         field_class = \
           if type < Enum
             EnumField
+	  elsif type < Group
+	    GroupField
           elsif type < Message
             MessageField
           else
@@ -623,6 +625,13 @@ module Protobuf
       end
     end
 
+    class GroupField < MessageField
+      def decode(stream)
+	message = type.new
+	message.parse_from(stream)
+	message
+      end
+    end
 
     class EnumField < VarintField
       def acceptable?(val)

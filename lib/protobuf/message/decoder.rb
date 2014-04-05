@@ -20,6 +20,7 @@ module Protobuf
     def decode(stream, message)
       until stream.eof?
         tag, wire_type = read_key(stream)
+        break if wire_type == WireType::END_GROUP
         field = message.get_field_by_tag(tag)
 
         method = READ_METHODS[wire_type]
@@ -84,14 +85,14 @@ module Protobuf
       stream.read(value_length)
     end
 
-    # Not implemented.
+    # Start of group.
     def read_start_group(stream)
-      raise NotImplementedError, 'Group is deprecated.'
+      stream
     end
 
-    # Not implemented.
+    # End of group.
     def read_end_group(stream)
-      raise NotImplementedError, 'Group is deprecated.'
+      raise NotImplementedError, 'This function should never be reached.'
     end
 
   end
